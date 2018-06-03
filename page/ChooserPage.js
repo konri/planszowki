@@ -17,7 +17,7 @@ class Card extends React.Component {
   render() {
     return (
       <View style={[styles.card, { backgroundColor: this.props.backgroundColor }]}>
-        <Text>{this.props.text}</Text>
+        <Text style={styles.moveNumber}>{this.props.text}</Text>
       </View>
     )
   }
@@ -133,15 +133,28 @@ class ChooserPage extends Component {
     }
     const cards = [];
     for (let i = 0; i < MAX_MOVES; i++) {
-      cards.push({ backgroundColor: first.color, text: this.getRandomEl(first.arr) });
-      cards.push({ backgroundColor: second.color, text: this.getRandomEl(second.arr) });
+      const firstMove = this.getRandomEl(first.arr);
+      cards.push({ backgroundColor: first.color, text: firstMove  });
+      cards.push({ backgroundColor: second.color, text: this.getRandomEl(second.arr, firstMove) });
     }
     console.log(CURRENT_INDEX);
     console.log(cards);
     return cards;
   }
 
-  getRandomEl(arr) {
+  getRandomEl(arr, move) {
+    if (move) {
+      let randEl;
+      let randomIndex;
+      let i = 0;
+      do {
+        randomIndex = Math.floor(Math.random() * (arr.length - 1));
+        randEl = arr[randomIndex];
+        i++;
+      } while (randEl === move && i < 5);
+
+      return arr.splice(randomIndex, 1);
+    }
     const randomIndex = Math.floor(Math.random() * (arr.length - 1));
     return arr.splice(randomIndex, 1);
   }
@@ -203,6 +216,13 @@ const styles = {
     width: '80%',
     height: 50
 
+  },
+  moveNumber: {
+    fontSize: 78,
+    paddingLeft: 15,
+    paddingRight: 15,
+    fontWeight: 'bold',
+    color: '#ffffff',
   }
 };
 
